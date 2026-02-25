@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnMate - Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="nav-container">
+        <div class="logo">
+            <img src="{% static 'images/learnmate-logo.png' %}" alt="LearnMate Logo" class="logo-img">
+        </div>
+        <nav class="nav-menu">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>Welcome to LearnMate</h1>
+            <p>Your learning partner for success.</p>
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login Now</a>
+        </section>
+
+        <section id="about" class="about">
+            <h2>About LearnMate</h2>
+            <p>
+                LearnMate is an online learning management system where students and teachers can interact,
+                access lessons, and manage classes easily.
+            </p>
+        </section>
+
+        <section id="contact" class="contact">
+            <h2>Contact Us</h2>
+            <p>Email: support@learnmate.com</p>
+            <p>Phone: +63 999 999 9999</p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 LearnMate. All rights reserved.</p>
+    </footer>
+</body>
+</html>

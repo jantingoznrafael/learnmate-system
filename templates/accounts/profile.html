@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Profile - LearnMate{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8 animate-[fadeInUp_0.6s_ease-out]">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2 logo-gradient">My Profile</h1>
+        <p class="text-slate-600 text-lg sm:text-xl">Update your profile information</p>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 sm:p-8 shadow-md border border-slate-200">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-slate-800">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="space-y-2">
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-slate-800">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-slate-800">Email</label>
+                {{ form.email }}
+            </div>
+            <div class="space-y-2">
+                <label for="{{ form.strand.id_for_label }}" class="block text-sm font-semibold text-slate-800">Strand</label>
+                {{ form.strand }}
+            </div>
+            <div class="pt-4">
+                <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    Update Profile
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

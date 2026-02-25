@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Strands - LearnMate{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 animate-[fadeInUp_0.6s_ease-out]">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2 logo-gradient">Choose Your Strand</h1>
+        <p class="text-slate-600 text-lg sm:text-xl">Explore questions by academic strand</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a href="{% url 'questions:strand_detail' 'HUMSS' %}" class="bg-white rounded-xl p-8 text-center shadow-md border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-in-up cursor-pointer no-underline" style="animation-delay: 0.1s">
+            <div class="text-5xl mb-4 transition-transform duration-300 hover:scale-110 hover:rotate-6">📚</div>
+            <h2 class="text-2xl font-bold text-primary mb-2">HUMSS</h2>
+            <p class="text-slate-600 text-sm">Humanities and Social Sciences</p>
+        </a>
+        
+        <a href="{% url 'questions:strand_detail' 'ABM' %}" class="bg-white rounded-xl p-8 text-center shadow-md border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-in-up cursor-pointer no-underline" style="animation-delay: 0.2s">
+            <div class="text-5xl mb-4 transition-transform duration-300 hover:scale-110 hover:rotate-6">💼</div>
+            <h2 class="text-2xl font-bold text-primary mb-2">ABM</h2>
+            <p class="text-slate-600 text-sm">Accountancy, Business and Management</p>
+        </a>
+        
+        <a href="{% url 'questions:strand_detail' 'TVL' %}" class="bg-white rounded-xl p-8 text-center shadow-md border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-in-up cursor-pointer no-underline" style="animation-delay: 0.3s">
+            <div class="text-5xl mb-4 transition-transform duration-300 hover:scale-110 hover:rotate-6">🔧</div>
+            <h2 class="text-2xl font-bold text-primary mb-2">TVL</h2>
+            <p class="text-slate-600 text-sm">Technical-Vocational-Livelihood</p>
+        </a>
+        
+        <a href="{% url 'questions:strand_detail' 'GAS' %}" class="bg-white rounded-xl p-8 text-center shadow-md border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-in-up cursor-pointer no-underline" style="animation-delay: 0.4s">
+            <div class="text-5xl mb-4 transition-transform duration-300 hover:scale-110 hover:rotate-6">🎓</div>
+            <h2 class="text-2xl font-bold text-primary mb-2">GAS</h2>
+            <p class="text-slate-600 text-sm">General Academic Strand</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load questions_extras %}
+
+{% block title %}Home - LearnMate{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 animate-[fadeInUp_0.6s_ease-out]">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2 logo-gradient">Welcome to LearnMate</h1>
+        <p class="text-slate-600 text-lg sm:text-xl">Questions for Everyone</p>
+    </div>
+
+    {% if questions %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for question in questions %}
+                <div class="bg-white rounded-xl p-6 shadow-md border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 fade-in-up flex flex-col h-full overflow-hidden cursor-pointer" 
+                     onclick="handleQuestionClick(this, '{% url 'questions:detail' question.pk %}');"
+                     data-animation-delay="{{ forloop.counter0|mul:0.1 }}">
+                    <div class="flex justify-between items-start mb-2 gap-4">
+                        <h3 class="text-sm font-medium text-slate-600 flex-1 break-words overflow-hidden">
+                            {{ question.title }}
+                        </h3>
+                        {% if user.is_authenticated %}
+                            <div class="relative flex-shrink-0">
+                                <button onclick="event.stopPropagation(); toggleMenu('{{ question.pk }}')" class="text-2xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 p-1 rounded transition-colors">⋯</button>
+                                <div id="menu-{{ question.pk }}" class="hidden absolute top-full right-0 mt-2 min-w-[120px] bg-white rounded-xl shadow-lg z-50 border border-slate-200 overflow-hidden">
+                                    {% if user == question.author %}
+                                        <a href="{% url 'questions:edit' question.pk %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-100" onclick="event.stopPropagation();">Edit</a>
+                                        <a href="{% url 'questions:delete' question.pk %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" onclick="event.stopPropagation();">Delete</a>
+                                    {% else %}
+                                        <a href="{% url 'questions:report' question.pk %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors" onclick="event.stopPropagation();">Report</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <p class="text-lg font-semibold text-slate-800 mb-4 line-clamp-4 break-words overflow-hidden flex-grow">{{ question.body|truncatewords:30 }}</p>
+                    <div class="flex flex-wrap gap-3 items-center text-xs text-slate-500 pt-4 border-t border-slate-200 mt-auto">
+                        <span class="font-medium text-slate-800 truncate">by {{ question.author.username }}</span>
+                        <span>{{ question.created_at|date:"M d, Y" }}</span>
+                        <span>{{ question.answer_count }} answer{{ question.answer_count|pluralize }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 px-4 bg-white rounded-xl shadow-md">
+            <p class="text-slate-600 text-lg mb-6">No questions yet. Be the first to ask!</p>
+            {% if user.is_authenticated %}
+                <a href="{% url 'questions:ask' %}" class="inline-block bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    Ask a Question
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleMenu(pk) {
+    const menu = document.getElementById('menu-' + pk);
+    document.querySelectorAll('.menu-dropdown').forEach(m => {
+        if (m.id !== 'menu-' + pk) m.classList.add('hidden');
+    });
+    menu.classList.toggle('hidden');
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.relative')) {
+        document.querySelectorAll('.menu-dropdown').forEach(m => m.classList.add('hidden'));
+    }
+});
+
+document.querySelectorAll('[data-animation-delay]').forEach(el => {
+    el.style.animationDelay = el.dataset.animationDelay + 's';
+});
+</script>
+{% endblock %}

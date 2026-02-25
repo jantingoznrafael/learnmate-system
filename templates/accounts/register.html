@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - LearnMate</title>
+    {% load static %}
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        .slide-down {
+            animation: slideDown 0.4s ease-in forwards;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        #requirements-guide {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
+            opacity: 0;
+        }
+        #requirements-guide.show {
+            max-height: 300px;
+            opacity: 1;
+        }
+        .password-toggle-btn {
+            border: none;
+            background: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+<div class="w-full max-w-2xl mx-auto">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 lg:p-12 fade-in-up">
+        <h1 class="text-2xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-center">Register</h1>
+        
+        {% if messages %}
+            <div class="mt-6 space-y-2">
+                {% for message in messages %}
+                    <div class="p-4 rounded-lg {% if message.tags == 'error' or message.tags == 'danger' %}bg-red-100 text-red-800 border border-red-300{% elif message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300{% else %}bg-blue-100 text-blue-800 border border-blue-300{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="space-y-6 mt-6">
+            {% csrf_token %}
+
+            <div>
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">
+                    Username <span class="text-red-600">*</span>
+                </label>
+                {{ form.username }}
+                
+                <!-- Username Requirements -->
+                <div id="requirements-guide" class="mt-3 p-4 bg-blue-50 border-l-4 border-blue-400 rounded">
+                    <p class="text-xs font-semibold text-blue-900 mb-2">Username Format Requirements:</p>
+                    <ul class="text-xs text-blue-800 space-y-1">
+                        <li id="check-uppercase" class="flex items-center"><span class="mr-2 text-red-600">✗</span> Must be UPPERCASE letters only</li>
+                        <li id="check-format" class="flex items-center"><span class="mr-2 text-red-600">✗</span> Format: FIRSTNAME.LASTNAME.IDNUMBER or FIRSTNAME.MIDDLENAME.LASTNAME.IDNUMBER</li>
+                        <li id="check-idnumber" class="flex items-center"><span class="mr-2 text-red-600">✗</span> ID number must be exactly 6 digits</li>
+                    </ul>
+                    <p class="text-xs text-blue-700 mt-2 italic">Example: RAFAEL.TINGZON.240081 or RAFAEL.N.TINGZON.240081</p>
+                </div>
+                
+                {% if form.username.errors %}
+                    <div class="text-red-600 text-sm mt-2 p-3 bg-red-50 rounded border border-red-200">
+                        {% for error in form.username.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="-mt-2">
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="text-red-600 text-sm mt-1">
+                        {% for error in form.email.errors %}
+                            {{ error }}<br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">First Name</label>
+                    {{ form.first_name }}
+                </div>
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">Last Name</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div>
+                <label for="{{ form.strand.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">Strand</label>
+                {{ form.strand }}
+            </div>
+
+            <div>
+                <label for="{{ form.password1.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">Password</label>
+                <div class="relative">
+                    {{ form.password1 }}
+                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-purple-600 p-1 password-toggle-btn" onclick="togglePassword('id_password1', this)" title="Toggle password visibility">
+                        <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-4.5-11-4.5s1.6-2.5 4.3-4.5m2.5-2.5C7.08 5.22 8.47 4 12 4c7 0 11 4.5 11 4.5s-1.6 2.5-4.3 4.5"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3 4.03-3 9-3 9 1.343 9 3Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <label for="{{ form.password2.id_for_label }}" class="block text-sm font-semibold text-slate-800 mb-2">Confirm Password</label>
+                <div class="relative">
+                    {{ form.password2 }}
+                    <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-purple-600 p-1 password-toggle-btn" onclick="togglePassword('id_password2', this)" title="Toggle password visibility">
+                        <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-4.5-11-4.5s1.6-2.5 4.3-4.5m2.5-2.5C7.08 5.22 8.47 4 12 4c7 0 11 4.5 11 4.5s-1.6 2.5-4.3 4.5"></path>
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                        </svg>
+                        <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3 4.03-3 9-3 9 1.343 9 3Z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-slate-600">
+            Already have an account? <a href="{% url 'accounts:login' %}" class="text-purple-600 font-semibold hover:underline">Login here</a>
+        </p>
+
+        <!-- Mobile About Us Link -->
+        <div class="lg:hidden mt-8 pt-6 border-t border-slate-200">
+            <button onclick="toggleAboutUs()" class="w-full px-4 py-3 bg-purple-100 text-purple-700 rounded-xl font-semibold hover:bg-purple-200 transition-colors text-center">
+                Learn About LearnMate
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile About Us Section -->
+    <div id="aboutUsSection" class="hidden lg:hidden bg-white rounded-2xl shadow-2xl p-8 mt-6 w-full max-w-lg mx-auto slide-up">
+        <button onclick="toggleAboutUs()" class="absolute top-4 right-4 text-2xl text-slate-500 hover:text-slate-700">✕</button>
+        
+        <div class="space-y-6">
+            <!-- What is LearnMate -->
+            <div class="pb-6 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">What is LearnMate?</h2>
+                <p class="text-slate-600 leading-relaxed text-center">
+                    LearnMate is a learning Question & Answer system designed for Students at AISAT College Quezon City.
+                    It helps manage their lessons, assignments, and student progress.
+                </p>
+            </div>
+
+            <!-- System Features -->
+            <div class="pb-6 border-b border-slate-200">
+                <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">System Features</h2>
+                <ul class="text-slate-600 space-y-2 text-center">
+                    <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Login / Register</li>
+                    <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Student Dashboard</li>
+                    <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Admin Dashboard</li>
+                </ul>
+            </div>
+
+            <!-- Group Info -->
+            <div>
+                <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">Developer Group</h2>
+                <p class="text-slate-600 leading-relaxed text-center">
+                    Developed by <strong>GROUP 3</strong> - GP4DA<br>
+                    <span class="text-sm text-slate-500">Contact: <strong>l3arnmat3@gmail.com</strong></span>
+                </p>
+            </div>
+        </div>
+
+        <button onclick="toggleAboutUs()" class="w-full mt-6 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+            Back to Sign Up
+        </button>
+    </div>
+</div>
+
+<script>
+function togglePassword(inputId, button) {
+    const input = document.getElementById(inputId);
+    const eyeOpen = button.querySelector(".eye-open");
+    const eyeClosed = button.querySelector(".eye-closed");
+    if (input.type === "password") {
+        input.type = "text";
+        eyeClosed.style.display = "none";
+        eyeOpen.style.display = "block";
+    } else {
+        input.type = "password";
+        eyeClosed.style.display = "block";
+        eyeOpen.style.display = "none";
+    }
+}
+
+function toggleAboutUs() {
+    const aboutSection = document.getElementById("aboutUsSection");
+    
+    if (aboutSection.classList.contains("hidden")) {
+        // Opening the section
+        aboutSection.classList.remove("hidden", "slide-down");
+        aboutSection.classList.add("slide-up");
+        
+        setTimeout(() => {
+            aboutSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    } else {
+        // Closing the section
+        aboutSection.classList.remove("slide-up");
+        aboutSection.classList.add("slide-down");
+        
+        setTimeout(() => {
+            aboutSection.classList.add("hidden");
+        }, 400);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const pwd1 = document.getElementById("id_password1");
+    const pwd2 = document.getElementById("id_password2");
+    if (pwd1) {
+        pwd1.setAttribute("autocomplete", "new-password");
+        pwd1.setAttribute("autocorrect", "off");
+        pwd1.setAttribute("autocapitalize", "off");
+        pwd1.setAttribute("spellcheck", "false");
+    }
+    if (pwd2) {
+        pwd2.setAttribute("autocomplete", "new-password");
+        pwd2.setAttribute("autocorrect", "off");
+        pwd2.setAttribute("autocapitalize", "off");
+        pwd2.setAttribute("spellcheck", "false");
+    }
+
+    // Username validation
+    const usernameField = document.getElementById("id_username");
+    const checkUppercase = document.getElementById("check-uppercase");
+    const checkFormat = document.getElementById("check-format");
+    const checkIdNumber = document.getElementById("check-idnumber");
+    const requirementsGuide = document.getElementById("requirements-guide");
+    let guideShown = false;
+
+    if (usernameField) {
+        usernameField.addEventListener("input", function() {
+            // Show guide on first input
+            if (!guideShown && this.value.length > 0) {
+                guideShown = true;
+                requirementsGuide.classList.add("show");
+            }
+            
+            // Hide guide when field is empty
+            if (this.value.length === 0) {
+                guideShown = false;
+                requirementsGuide.classList.remove("show");
+            }
+            
+            const username = this.value.trim();
+            
+            // Check 1: UPPERCASE only
+            const isUppercase = username === username.toUpperCase() && /^[A-Z0-9.]*$/.test(username);
+            updateCheck(checkUppercase, isUppercase);
+            
+            // Check 2: Format check (3 or 4 parts separated by dots)
+            const parts = username.split('.');
+            const isValidFormat = (parts.length === 3 || parts.length === 4) && 
+                                  parts.every((p, i) => i === parts.length - 1 || /^[A-Z]+$/.test(p));
+            updateCheck(checkFormat, isValidFormat);
+            
+            // Check 3: ID number check (last part must be 6 digits)
+            const lastPart = parts[parts.length - 1];
+            const isValidIdNumber = /^\d{6}$/.test(lastPart);
+            updateCheck(checkIdNumber, isValidIdNumber);
+        });
+    }
+});
+
+function updateCheck(element, isValid) {
+    if (!element) return;
+    if (isValid) {
+        element.classList.remove("text-red-600");
+        element.classList.add("text-green-600");
+        element.querySelector("span").textContent = "✓";
+    } else {
+        element.classList.remove("text-green-600");
+        element.classList.add("text-red-600");
+        element.querySelector("span").textContent = "✗";
+    }
+}
+</script>
+</body>
+</html>

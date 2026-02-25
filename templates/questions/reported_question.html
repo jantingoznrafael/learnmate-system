@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Report Question - LearnMate{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1 class="page-title">Report Question</h1>
+        <p class="page-subtitle">Report inappropriate content</p>
+    </div>
+
+    <div class="form-card">
+        <div class="report-info">
+            <h3>{{ question.title }}</h3>
+            <p>Thank you for keeping LearnMate safe. The admin will review this question.</p>
+            <form method="post" class="report-form">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Report</button>
+                    <a href="{% url 'questions:detail' question.pk %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

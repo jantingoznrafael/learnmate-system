@@ -1,0 +1,153 @@
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes fadeSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes clickSlideUp {
+    from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-25px) scale(0.97);
+        opacity: 0.7;
+    }
+}
+
+.click-slide-up {
+    animation: clickSlideUp 0.4s ease-out forwards;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+/* Font weight utilities */
+.font-bold {
+    font-weight: 800;
+}
+
+.font-semibold {
+    font-weight: 700;
+}
+
+.font-medium {
+    font-weight: 600;
+}
+
+/* Apply animation with delays for staggered effect */
+.fade-in-up[data-delay] {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+/* Mobile version animations */
+@media (max-width: 768px) {
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .fade-in-up[data-delay] {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+}
+
+/* Desktop version animations */
+@media (min-width: 769px) {
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    
+    .fade-in-up[data-delay] {
+        animation: fadeInUp 0.6s ease-out forwards;
+        opacity: 0;
+    }
+}
+
+/* Custom gradient text for logo */
+.logo-gradient {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Notification badge pulse */
+.notification-badge {
+    animation: pulse 2s infinite;
+}
+
+/* Burger menu animation */
+.burger-menu {
+    animation: fadeSlide 0.2s ease;
+}
+.centered-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure it takes full height of the viewport */
+}
+
+/* Add this class to the container holding notifications to center it */
+.container-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Optional: Center the notification section itself */
+.notifications-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    max-width: 1200px; /* Optional: you can also add a max-width if needed */
+}

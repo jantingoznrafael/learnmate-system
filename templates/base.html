@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LearnMate{% endblock %}</title>
+    {% load static %}
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom Animations -->
+    <link rel="stylesheet" href="{% static 'css/tailwind-custom.css' %}">
+    
+    <script>
+        // Tailwind Config - LearnMate Colors
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        'primary-dark': '#4f46e5',
+                        secondary: '#8b5cf6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                        warning: '#f59e0b',
+                        info: '#3b82f6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script>
+        // Handle question box click animation
+        function handleQuestionClick(element, url) {
+            element.classList.add('click-slide-up');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 400);
+        }
+    </script>
+    
+    <style>
+        /* Custom styles that can't be done with Tailwind */
+        body {
+            font-weight: 500;
+        }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #6366f1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .btn-logout::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #6366f1;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-logout:hover::after {
+            width: 100%;
+        }
+
+        /* Increase font weight for better readability */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+        }
+
+        a {
+            font-weight: 500;
+        }
+
+        .font-medium {
+            font-weight: 600;
+        }
+
+        .font-semibold {
+            font-weight: 700;
+        }
+
+        .font-bold {
+            font-weight: 800;
+        }
+
+        p {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+    {% if user.is_authenticated %}
+    <nav class="bg-white shadow-sm sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b-4 border-purple-600">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                <!-- Logo -->
+                <div class="flex items-center flex-shrink-0">
+                    <img src="{% static 'images/learnmate-logo.png' %}" alt="LearnMate Logo" class="h-32 w-auto max-w-[100px] object-contain">
+                </div>
+
+                <!-- Navigation & Menu (Right side, compact) -->
+                <div class="flex items-center gap-2">
+                    <!-- Desktop Navigation Links -->
+                    <div class="hidden md:flex items-center gap-2">
+                        <a href="{% url 'questions:home' %}" class="text-slate-600 hover:text-slate-800 font-bold relative py-2 px-3 transition-colors text-sm">Home</a>
+                        <a href="{% url 'questions:strands' %}" class="text-slate-600 hover:text-slate-800 font-bold relative py-2 px-3 transition-colors text-sm">Strands</a>
+                        <a href="{% url 'questions:ask' %}" class="text-slate-600 hover:text-slate-800 font-bold relative py-2 px-3 transition-colors text-sm">Ask</a>
+                    </div>
+
+                    <!-- Burger Menu (Desktop & Mobile) -->
+                    <div class="relative">
+                        <button onclick="toggleBurger()" class="text-2xl text-slate-600 hover:text-slate-800 transition-colors p-1">☰</button>
+                        <div id="burgerMenu" class="hidden absolute top-full right-0 mt-2 min-w-[220px] bg-white rounded-lg shadow-xl z-50 overflow-hidden">
+                            <a href="{% url 'questions:home' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors md:hidden font-medium">Home</a>
+                            <a href="{% url 'questions:strands' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors md:hidden font-medium">Strands</a>
+                            <a href="{% url 'questions:ask' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors md:hidden font-medium">Ask Question</a>
+                            <div class="border-t border-slate-200 my-1 md:hidden"></div>
+                            <a href="{% url 'questions:my_questions' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors font-medium">My Questions</a>
+                            <a href="{% url 'notifications:list' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors relative font-medium">
+                                Notifications
+                                {% if unread_notification_count > 0 %}
+                                    <span class="absolute top-2 right-4 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+                                        {{ unread_notification_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                            <a href="{% url 'accounts:profile' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors font-medium">Profile</a>
+                            {% if user.is_staff %}
+                                <div class="border-t border-slate-200 my-1"></div>
+                                <a href="{% url 'admin:index' %}" class="block px-4 py-3 text-slate-700 hover:bg-slate-50 transition-colors font-semibold">Admin Panel</a>
+                            {% endif %}
+                            <div class="border-t border-slate-200 my-1"></div>
+                            <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full text-left px-4 py-3 text-slate-700 hover:bg-slate-50 font-semibold transition-colors">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <main class="flex-1 py-8">
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+                {% for message in messages %}
+                    <div class="mb-4 p-4 rounded-xl shadow-md animate-[slideIn_0.3s_ease-out] 
+                        {% if message.tags == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-500
+                        {% elif message.tags == 'error' %}bg-red-100 text-red-800 border-l-4 border-red-500
+                        {% elif message.tags == 'info' %}bg-blue-100 text-blue-800 border-l-4 border-blue-500
+                        {% else %}bg-slate-100 text-slate-800 border-l-4 border-slate-500{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="mt-10 py-5 text-center text-base text-slate-700 border-t-4 border-purple-600 bg-white">
+        <p>&copy; 2026 LearnMate. All rights reserved.</p>
+    </footer>
+
+    <script>
+    function toggleBurger() {
+        const menu = document.getElementById("burgerMenu");
+        menu.classList.toggle("hidden");
+    }
+
+    document.addEventListener("click", function (e) {
+        const menu = document.getElementById("burgerMenu");
+        const burger = document.querySelector(".md\\:hidden button");
+        if (burger && !burger.contains(e.target) && menu && !menu.contains(e.target)) {
+            menu.classList.add("hidden");
+        }
+    });
+
+    // Apply staggered animations on page load
+    document.addEventListener("DOMContentLoaded", function() {
+        // Handle fade-in-up animations with delays
+        document.querySelectorAll('.fade-in-up[data-animation-delay]').forEach((el) => {
+            const delay = parseFloat(el.dataset.animationDelay) || 0;
+            el.style.animation = `fadeInUp 0.6s ease-out ${delay}s forwards`;
+            el.style.opacity = '0';
+        });
+
+        // Handle fade-in-up animations with data-delay (for notifications)
+        document.querySelectorAll('.fade-in-up[data-delay]').forEach((el) => {
+            const delay = parseFloat(el.dataset.delay) || 0;
+            el.style.animation = `fadeInUp 0.6s ease-out ${delay}s forwards`;
+            el.style.opacity = '0';
+        });
+
+        // Apply animations on both mobile and desktop
+        document.querySelectorAll('.fade-in-up').forEach((el, index) => {
+            if (!el.dataset.animationDelay && !el.dataset.delay) {
+                el.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s forwards`;
+                el.style.opacity = '0';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

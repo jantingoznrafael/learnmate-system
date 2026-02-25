@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load questions_extras %}
+
+{% block title %}Notifications - LearnMate{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12 animate-[fadeInUp_0.6s_ease-out]">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2 logo-gradient">Notifications</h1>
+        <p class="text-slate-600 text-lg sm:text-xl mb-6">Your recent notifications</p>
+        {% if notifications %}
+            <a href="{% url 'notifications:mark_all_read' %}" class="inline-block bg-secondary text-white px-6 py-2 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all text-sm">Mark All as Read</a>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+        <div class="space-y-4">
+            {% for notification in notifications %}
+                <div class="bg-white rounded-xl p-6 shadow-md border {% if not notification.is_read %}border-primary bg-indigo-50{% else %}border-slate-200{% endif %} fade-in-up flex items-center justify-between gap-4 hover:shadow-lg transition-shadow" data-delay="{{ forloop.counter0|add:0|mul:0.05 }}">
+                    <div class="flex-grow">
+                        <p class="text-slate-800 font-semibold mb-1">{{ notification.message }}</p>
+                        <span class="text-xs text-slate-500">{{ notification.created_at|time_ago }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        {% if notification.link %}
+                            <a href="{{ notification.link }}" class="bg-primary text-white px-4 py-2 rounded-lg font-semibold text-sm hover:bg-primary-dark transition-colors">View →</a>
+                        {% endif %}
+                        {% if not notification.is_read %}
+                            <a href="{% url 'notifications:mark_read' notification.pk %}" class="bg-slate-200 text-slate-800 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-slate-300 transition-colors">Mark Read</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 px-4 bg-white rounded-xl shadow-md">
+            <p class="text-slate-600 text-lg">No notifications yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

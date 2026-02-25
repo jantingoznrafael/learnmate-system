@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Question - LearnMate{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-8 animate-[fadeInUp_0.6s_ease-out]">
+        <h1 class="text-4xl sm:text-5xl font-bold mb-2 logo-gradient">Edit Question</h1>
+        <p class="text-slate-600 text-lg sm:text-xl">Update your question</p>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 sm:p-8 shadow-md border border-slate-200">
+        {% if form.errors %}
+            <div class="mb-6 p-4 rounded-xl bg-red-100 text-red-800 border-l-4 border-red-500 animate-[slideIn_0.3s_ease-out]">
+                <strong>Please correct the errors below:</strong>
+                <ul class="mt-2 ml-6 list-disc">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <li>{{ field|title }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <div class="space-y-2">
+                <label for="{{ form.title.id_for_label }}" class="block text-sm font-semibold text-slate-800">Question Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="text-red-600 text-sm">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="space-y-2">
+                <label for="{{ form.body.id_for_label }}" class="block text-sm font-semibold text-slate-800">Question Details</label>
+                {{ form.body }}
+                {% if form.body.errors %}
+                    <div class="text-red-600 text-sm">{{ form.body.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="space-y-2">
+                <label for="{{ form.strand.id_for_label }}" class="block text-sm font-semibold text-slate-800">Strand</label>
+                {{ form.strand }}
+                {% if form.strand.errors %}
+                    <div class="text-red-600 text-sm">{{ form.strand.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                <button type="submit" class="flex-1 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    Update Question
+                </button>
+                <a href="{% url 'questions:detail' question.pk %}" class="flex-1 sm:flex-initial text-center bg-slate-100 text-slate-800 px-6 py-3 rounded-xl font-semibold border-2 border-slate-300 hover:bg-slate-200 transition-colors">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

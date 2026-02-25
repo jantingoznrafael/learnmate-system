@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LearnMate</title>
+    {% load static %}
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+        .slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        .slide-down {
+            animation: slideDown 0.4s ease-in forwards;
+        }
+        .toggle-password-btn {
+            border: none;
+            background: none;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+<div class="w-full max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 h-full">
+        
+        <!-- Slider Section -->
+        <div class="hidden lg:block bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div class="h-full flex flex-col">
+                <img src="{% static 'images/learnmate-logo.png' %}" alt="LearnMate Logo" class="max-w-[350px] w-full h-auto mx-auto mt-8 mb-4">
+                <div class="flex-1 relative overflow-hidden">
+                    <div id="slider" class="flex h-full transition-transform duration-500 ease-in-out">
+                        <div class="min-w-full flex flex-col justify-center items-center text-center p-8">
+                            <h2 class="text-3xl font-bold text-purple-600 mb-4">What is LearnMate?</h2>
+                            <p class="text-slate-600 leading-relaxed">
+                                LearnMate is a learning Question & Answer system designed for Students at AISAT College Quezon City.
+                                It helps manage their lessons, assignments, and student progress.
+                            </p>
+                        </div>
+                        <div class="min-w-full flex flex-col justify-center items-center text-center p-8">
+                            <h2 class="text-3xl font-bold text-purple-600 mb-4">System Features</h2>
+                            <ul class="text-slate-600 text-left space-y-2">
+                                <li>• Login / Register</li>
+                                <li>• Student Dashboard</li>
+                                <li>• Admin Dashboard</li>
+                            </ul>
+                        </div>
+                        <div class="min-w-full flex flex-col justify-center items-center text-center p-8">
+                            <h2 class="text-3xl font-bold text-purple-600 mb-4">Group</h2>
+                            <p class="text-slate-600 leading-relaxed">
+                                Developed by <strong>GROUP 3</strong> - GP4DA<br>
+                                Contact: <strong>l3arnmat3@gmail.com</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center gap-2 p-4 bg-slate-50">
+                    <button onclick="slide(-1)" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">‹</button>
+                    <button onclick="slide(1)" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">›</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8 lg:p-12 fade-in-up flex flex-col justify-center">
+            <h1 class="text-3xl font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent text-center">Welcome To LearnMate</h1>
+            <p class="text-slate-600 mb-6 text-center">Login to continue to LearnMate</p>
+
+            {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="p-4 rounded-lg {% if message.tags == 'error' or message.tags == 'danger' %}bg-red-100 text-red-800 border border-red-300{% elif message.tags == 'success' %}bg-green-100 text-green-800 border border-green-300{% else %}bg-blue-100 text-blue-800 border border-blue-300{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div>
+                    <label class="block text-center text-sm font-semibold text-slate-800 mb-3">Login As</label>
+                    <div class="flex justify-center gap-8">
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="user_type" value="student" checked class="mr-2">
+                            <span class="text-slate-700">Student</span>
+                        </label>
+                        <label class="flex items-center cursor-pointer">
+                            <input type="radio" name="user_type" value="admin" class="mr-2">
+                            <span class="text-slate-700">Admin</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-800 mb-2">Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        class="w-full px-4 py-3 border-2 border-slate-300 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                        placeholder="Input your username"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-800 mb-2">Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            id="id_password"
+                            name="password"
+                            class="w-full px-4 py-3 pr-12 border-2 border-slate-300 rounded-xl text-base transition-all focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10"
+                            placeholder="Input your password"
+                            required
+                        >
+                        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-purple-600 p-1 toggle-password-btn" onclick="togglePassword()" title="Toggle password visibility">
+                            <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-4.5-11-4.5s1.6-2.5 4.3-4.5m2.5-2.5C7.08 5.22 8.47 4 12 4c7 0 11 4.5 11 4.5s-1.6 2.5-4.3 4.5"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                            <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                                <circle cx="12" cy="12" r="1"></circle>
+                                <path d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3 4.03-3 9-3 9 1.343 9 3Z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if error_message %}
+                        <div class="text-red-600 text-sm mt-2">
+                            {{ error_message }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 rounded-xl font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                    Login
+                </button>
+            </form>
+
+            <p class="text-center mt-6 text-slate-600">
+                Don't have an account? <a href="{% url 'accounts:register' %}" class="text-purple-600 font-semibold hover:underline">Sign up here</a>
+            </p>
+
+            <!-- Mobile About Us Link -->
+            <div class="lg:hidden mt-8 pt-6 border-t border-slate-200">
+                <button onclick="toggleAboutUs()" class="w-full px-4 py-3 bg-purple-100 text-purple-700 rounded-xl font-semibold hover:bg-purple-200 transition-colors text-center">
+                    Learn About LearnMate
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile About Us Section -->
+        <div id="aboutUsSection" class="hidden lg:hidden bg-white rounded-2xl shadow-2xl p-8 mt-6 w-full max-w-lg mx-auto slide-up">
+            <button onclick="toggleAboutUs()" class="absolute top-4 right-4 text-2xl text-slate-500 hover:text-slate-700">✕</button>
+            
+            <div class="space-y-6">
+                <!-- What is LearnMate -->
+                <div class="pb-6 border-b border-slate-200">
+                    <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">What is LearnMate?</h2>
+                    <p class="text-slate-600 leading-relaxed text-center">
+                        LearnMate is a learning Question & Answer system designed for Students at AISAT College Quezon City.
+                        It helps manage their lessons, assignments, and student progress.
+                    </p>
+                </div>
+
+                <!-- System Features -->
+                <div class="pb-6 border-b border-slate-200">
+                    <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">System Features</h2>
+                    <ul class="text-slate-600 space-y-2 text-center">
+                        <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Login / Register</li>
+                        <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Student Dashboard</li>
+                        <li class="flex items-center justify-center"><span class="text-purple-600 mr-3">✓</span>Admin Dashboard</li>
+                    </ul>
+                </div>
+
+                <!-- Group Info -->
+                <div>
+                    <h2 class="text-2xl font-bold text-purple-600 mb-3 text-center">Developer Group</h2>
+                    <p class="text-slate-600 leading-relaxed text-center">
+                        Developed by <strong>GROUP 3</strong> - GP4DA<br>
+                        <span class="text-sm text-slate-500">Contact: <strong>l3arnmat3@gmail.com</strong></span>
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="toggleAboutUs()" class="w-full mt-6 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all">
+                Back to Login
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentSlide = 0;
+function slide(direction) {
+    const slider = document.getElementById('slider');
+    const totalSlides = document.querySelectorAll('#slider > div').length;
+    currentSlide += direction;
+    if (currentSlide < 0) currentSlide = totalSlides - 1;
+    if (currentSlide >= totalSlides) currentSlide = 0;
+    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+function togglePassword() {
+    const password = document.getElementById("id_password");
+    const eyeOpen = document.querySelector(".eye-open");
+    const eyeClosed = document.querySelector(".eye-closed");
+    if (password.type === "password") {
+        password.type = "text";
+        eyeClosed.style.display = "none";
+        eyeOpen.style.display = "block";
+    } else {
+        password.type = "password";
+        eyeClosed.style.display = "block";
+        eyeOpen.style.display = "none";
+    }
+}
+
+function toggleAboutUs() {
+    const aboutSection = document.getElementById("aboutUsSection");
+    
+    if (aboutSection.classList.contains("hidden")) {
+        // Opening the section
+        aboutSection.classList.remove("hidden", "slide-down");
+        aboutSection.classList.add("slide-up");
+        
+        setTimeout(() => {
+            aboutSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    } else {
+        // Closing the section
+        aboutSection.classList.remove("slide-up");
+        aboutSection.classList.add("slide-down");
+        
+        setTimeout(() => {
+            aboutSection.classList.add("hidden");
+        }, 400);
+    }
+}
+</script>
+</body>
+</html>
